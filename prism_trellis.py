@@ -66,7 +66,7 @@ class PrismTrellisLayout(QuantizedLayout):
         convrot = p.convrot if p is not None else True
         groupsize = p.convrot_groupsize if p is not None else 256
         qdata, p8 = TensorWiseINT8Layout.quantize(tensor, is_weight=True, per_channel=True, convrot=convrot,
-                                                  convrot_groupsize=groupsize)
+                                                  convrot_groupsize=groupsize, **kwargs)
         levels = torch.zeros(0, dtype=torch.uint8, device=qdata.device)
         return qdata, cls.Params(scale=p8.scale, orig_dtype=p8.orig_dtype, orig_shape=p8.orig_shape, levels=levels,
                                  convrot=convrot, convrot_groupsize=groupsize, plain=True)
