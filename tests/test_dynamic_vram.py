@@ -15,6 +15,7 @@ import comfy.memory_management
 import comfy.model_patcher
 import comfy.model_prefetch
 import comfy.ops
+import comfy.utils
 from comfy.weight_adapter.lora import LoRAAdapter
 from comfy_kitchen.tensor import QuantizedTensor
 from comfy_kitchen.tensor.int8 import TensorWiseINT8Layout
@@ -27,6 +28,11 @@ sys.modules[spec.name] = package
 spec.loader.exec_module(package)
 pt = package.prism_trellis
 sys.argv = [sys.argv[0]]
+
+
+def requested_seed(layer):
+    """The stochastic-rounding seed ComfyUI's resolver requests when it requantizes a patched layer."""
+    return comfy.utils.string_to_seed(layer.seed_key)
 
 
 class DynamicVRAMTests(unittest.TestCase):
@@ -72,7 +78,8 @@ class DynamicVRAMTests(unittest.TestCase):
         packed = destination._qdata.clone()
         levels = destination._params.levels.clone()
         result = self.resolve(layer)
-        expected = layer.weight.requantize_from_float(original + delta, scale='recalculate')
+        expected = layer.weight.requantize_from_float(original + delta, scale='recalculate',
+                                                     stochastic_rounding=requested_seed(layer))
         self.assertTrue(result._params.plain)
         self.assertEqual(result._qdata.shape, (16, 256))
         torch.testing.assert_close(result._qdata, expected._qdata)
@@ -86,7 +93,8 @@ class DynamicVRAMTests(unittest.TestCase):
         self.patch(layer, strength=0.5)
         self.prefetch(layer)
         half = self.resolve(layer)
-        expected = layer.weight.requantize_from_float(original + delta * 0.5, scale='recalculate')
+        expected = layer.weight.requantize_from_float(original + delta * 0.5, scale='recalculate',
+                                                     stochastic_rounding=requested_seed(layer))
         torch.testing.assert_close(half._qdata, expected._qdata)
         layer.weight_lowvram_function = None
         self.prefetch(layer)
@@ -177,7 +185,8 @@ class DynamicVRAMTests(unittest.TestCase):
         pt.prism_trellis_lora._after_load(self.patcher(layer))
         self.prefetch(layer)
         result = self.resolve(layer)
-        expected = layer.weight.requantize_from_float(expected_float, scale='recalculate')
+        expected = layer.weight.requantize_from_float(expected_float, scale='recalculate',
+                                                     stochastic_rounding=requested_seed(layer))
         torch.testing.assert_close(result._qdata, expected._qdata)
         torch.testing.assert_close(result._params.scale, expected._params.scale)
         self.assertTrue(result._params.plain)
