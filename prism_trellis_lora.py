@@ -9,14 +9,12 @@ the weight and added next to it:
 restricted to the patched rows when ComfyUI addresses part of a fused layer (Qwen-Image 2.1's img_mlp.gate_up).
 The base weight keeps its size and the delta is not rounded to int8. Patches the branch can't express (DoRA, LoHa,
 LoKr, OFT, LoCon mid weights, full diffs, a strength_model other than 1) go through ComfyUI's merge as before, which
-leaves the layer as plain int8. Under dynamic VRAM that merge can't work (ComfyUI writes the merged int8 weight back
-into the layer's resident trellis copy, which has another shape), so there those patches are skipped with a warning.
+leaves the layer as plain int8. Under dynamic VRAM the resolver uses transient merged weights instead of writing
+them back into the smaller packed resident allocation.
 
 ComfyUI applies patches in three places, and all three are covered: merged at load (ModelPatcher.
 patch_weight_to_device), at cast time for offloaded layers (LowVramPatch in module.weight_function) and at cast time
 under dynamic VRAM (module.weight_lowvram_function)."""
-import logging
-
 import torch
 import comfy.model_patcher as mp
 import comfy.utils
@@ -105,7 +103,6 @@ def forward_hook(module, args, output):
 def _after_load(patcher):
     """Attach the branch on every trellis layer whose patches allow it and drop ComfyUI's cast-time patch for it;
     clear stale branches."""
-    skipped = []
     for name, module in patcher.model.named_modules():
         if not _is_trellis(getattr(module, 'weight', None)):
             continue
@@ -121,13 +118,6 @@ def _after_load(patcher):
             continue
         if getattr(module, 'prism_lora', None):
             _set(module, [])
-        if dynamic:
-            module.weight_lowvram_function = None
-            skipped.append(key)
-    if skipped:
-        logging.warning('PRISM-Q: %d trellis layers have patches other than plain LoRA (e.g. DoRA, LoHa, LoKr, full '
-                        'diffs); under dynamic VRAM they cannot be merged into a trellis layer and are ignored. Use '
-                        'the int8 file or --disable-dynamic-vram for them. First: %s', len(skipped), skipped[0])
 
 
 def _clear(patcher):

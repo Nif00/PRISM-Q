@@ -83,8 +83,10 @@ LoRA into int8 instead, as ComfyUI does for an INT8 checkpoint, needs 7.2 GiB.
 
 Other patch types (DoRA, LoHa, LoKr, full diffs) requantize the layer to
 plain int8, as on the official INT8 checkpoint. Under dynamic VRAM (ComfyUI's
-default on NVIDIA) that can't be written back into a trellis layer, so they
-are skipped with a warning; use the int8 file or `--disable-dynamic-vram`.
+default on NVIDIA), the packed source stays resident and the merged weight is
+transient: it cannot be cached in the smaller packed allocation. These patches
+are reapplied each forward, adding overhead for the affected layers. Plain LoRA
+branches and unpatched layers keep normal resident caching.
 
 The pack can be installed next to other node packs that hook ComfyUI's
 quantized loader. Formats it doesn't know pass through to the previous hook.

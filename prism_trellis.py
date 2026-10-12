@@ -12,8 +12,8 @@ transient int8 weight (prism_trellis_decode.py, a CUDA kernel compiled at first 
 int8_linear with ConvRot, the exact kernel call of the official INT8 ConvRot checkpoint, so outputs are bit-identical
 to the expanded checkpoint while the weights take Kb + 5/256 bits in VRAM. Loading goes through the stock "Load
 Diffusion Model" node via prism_trellis_hook. A plain LoRA runs as a low-rank branch next to the trellis weight
-(prism_trellis_lora.py); other patch types requantize the layer to plain int8, as ConvRot does (not possible
-under dynamic VRAM, where they are skipped).
+(prism_trellis_lora.py); other patch types requantize the layer to plain int8, as ConvRot does. Under
+dynamic VRAM, these merged weights are transient and the packed source stays resident.
 """
 import dataclasses
 import logging
@@ -126,6 +126,34 @@ if not getattr(comfy.ops._quantized_weight_state_dict, 'prism_trellis', False):
     _quantized_weight_state_dict = comfy.ops._quantized_weight_state_dict
     quantized_weight_state_dict.prism_trellis = True
     comfy.ops._quantized_weight_state_dict = quantized_weight_state_dict
+
+
+# ---------------------------------------------------------------- dynamic VRAM
+
+def resolve_cast_module_with_vbar(s, dtype, device, bias_dtype, compute_dtype, want_requant, return_weights=True):
+    """Packed merge patches use transient INT8 storage, never packed resident writeback."""
+    weight = s.weight
+    prefetch = getattr(s, '_prefetch', None)
+    if (isinstance(weight, QuantizedTensor) and weight._layout_cls == LAYOUT and not weight._params.plain
+            and getattr(s, 'weight_lowvram_function', None) is not None
+            and prefetch is not None and not prefetch['resident']):
+        # Requantization grows the physical payload. ComfyUI's resident allocation
+        # still has packed geometry, so use its nonresident path for this layer.
+        signature = prefetch['signature']
+        prefetch['signature'] = None
+        try:
+            return _resolve_cast_module_with_vbar(s, dtype, device, bias_dtype, compute_dtype, want_requant, return_weights)
+        finally:
+            # The caller still needs the real signature to unpin the allocation.
+            prefetch['signature'] = signature
+    return _resolve_cast_module_with_vbar(s, dtype, device, bias_dtype, compute_dtype, want_requant, return_weights)
+
+
+if (hasattr(comfy.ops, 'resolve_cast_module_with_vbar')
+        and not getattr(comfy.ops.resolve_cast_module_with_vbar, 'prism_trellis', False)):
+    _resolve_cast_module_with_vbar = comfy.ops.resolve_cast_module_with_vbar
+    resolve_cast_module_with_vbar.prism_trellis = True
+    comfy.ops.resolve_cast_module_with_vbar = resolve_cast_module_with_vbar
 
 
 # ---------------------------------------------------------------- forward
