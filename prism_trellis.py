@@ -174,7 +174,8 @@ def linear_input_act(linear, x, input_act, act_weight=None, act_eps=0.0, residua
     here a trellis layer takes that same int8_linear call with its decoded weight, so it stays bit-identical to the
     int8 checkpoint. Everything else goes to ComfyUI's function."""
     weight = linear.weight
-    if (comfy.model_management.in_training or not isinstance(weight, QuantizedTensor) or weight._layout_cls != LAYOUT
+    if (comfy.model_management.in_training or getattr(linear, 'comfy_force_forward', False)
+            or not isinstance(weight, QuantizedTensor) or weight._layout_cls != LAYOUT
             or weight._params.transposed or getattr(linear, '_full_precision_mm', False)):
         return _linear_input_act(linear, x, input_act, act_weight, act_eps, residual, residual_scale)
     weight, bias, offload_stream = comfy.ops.cast_bias_weight(linear, x, offloadable=True, compute_dtype=x.dtype,
