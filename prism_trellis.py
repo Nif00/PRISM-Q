@@ -109,6 +109,25 @@ comfy.quant_ops.QUANT_ALGOS[FORMAT] = {
 }
 
 
+# ---------------------------------------------------------------- serialization
+
+def quantized_weight_state_dict(module, sd, prefix, extra_quant_conf=None, extra_quant_params=()):
+    """Preserve PRISM's ConvRot configuration through ComfyUI's shared saver."""
+    weight = getattr(module, 'weight', None)
+    if (getattr(module, 'quant_format', None) == FORMAT
+            and isinstance(weight, QuantizedTensor) and weight._layout_cls == LAYOUT):
+        extra_quant_conf = {'convrot': weight._params.convrot,
+                            'convrot_groupsize': weight._params.convrot_groupsize,
+                            **(extra_quant_conf or {})}
+    return _quantized_weight_state_dict(module, sd, prefix, extra_quant_conf, extra_quant_params)
+
+
+if not getattr(comfy.ops._quantized_weight_state_dict, 'prism_trellis', False):
+    _quantized_weight_state_dict = comfy.ops._quantized_weight_state_dict
+    quantized_weight_state_dict.prism_trellis = True
+    comfy.ops._quantized_weight_state_dict = quantized_weight_state_dict
+
+
 # ---------------------------------------------------------------- forward
 
 def trellis_linear(x, weight, bias=None):
