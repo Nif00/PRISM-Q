@@ -237,7 +237,9 @@ def _load(module, super_load, state_dict, prefix, layer_conf, local_metadata, st
         levels = levels.to(device=device, dtype=torch.uint8).contiguous()
     module.quant_format = FORMAT
     module.layout_type = LAYOUT
-    module._full_precision_mm_config = False
+    module._full_precision_mm_config = layer_conf.get('full_precision_matrix_mult', False)
+    if not module._full_precision_mm:
+        module._full_precision_mm = module._full_precision_mm_config
     params = PrismTrellisLayout.Params(
         scale=scale.to(device=device, dtype=torch.float32), orig_dtype=compute_dtype, orig_shape=module._orig_shape,
         levels=levels, convrot=bool(layer_conf.get('convrot', True)),
