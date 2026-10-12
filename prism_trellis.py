@@ -75,7 +75,8 @@ class PrismTrellisLayout(QuantizedLayout):
     def int8_weight(cls, qdata, params):
         if params.plain:
             return qdata
-        return td.decode_words(qdata, params.levels)
+        # Checkpoint levels are validated at load time, not on every forward.
+        return td._decode_words(qdata, params.levels)
 
     @classmethod
     def int8_params(cls, params):
@@ -230,6 +231,8 @@ def _load(module, super_load, state_dict, prefix, layer_conf, local_metadata, st
                 or weight.shape[0] != n or (weight.shape[1] * 8) % k or not 1 <= weight.shape[1] * 8 // k <= 5
                 or levels.shape != (n // 16, k // 16)):
             raise ValueError(f'PRISM trellis layer {layer}: storage shapes do not match ({n}, {k})')
+        if levels.dtype != torch.uint8 or torch.any(levels >= td.trellis_file.LEVELS):
+            raise ValueError(f'PRISM trellis layer {layer}: weight_level must be uint8 with values in 0..31')
         qdata = td.to_words(td.trellis_file.from_file(weight.to(device=device), levels))
         levels = levels.to(device=device, dtype=torch.uint8).contiguous()
     module.quant_format = FORMAT

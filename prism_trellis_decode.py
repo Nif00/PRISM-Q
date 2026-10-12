@@ -130,6 +130,15 @@ def available(device):
 
 def decode_words(words, levels, out=None):
     """to_words(payload) (n/16, k/16, 8Kb) and levels (n/16, k/16) -> int8 weight (n, k)."""
+    if levels.shape != words.shape[:2] or levels.device != words.device:
+        raise ValueError('PRISM trellis weight_level must match the payload tile shape and device')
+    if levels.dtype != torch.uint8 or torch.any(levels >= trellis_file.LEVELS):
+        raise ValueError('PRISM trellis weight_level must be uint8 with values in 0..31')
+    return _decode_words(words, levels.contiguous(), out)
+
+
+def _decode_words(words, levels, out=None):
+    """Decode contiguous uint8 levels already validated by the loader or decode_words."""
     tn, tk, nwords = words.shape
     n, k = tn * 16, tk * 16
     dev = words.device
