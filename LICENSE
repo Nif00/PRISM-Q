@@ -1,21 +1,141 @@
-MIT License
+MIT LICENSE
+(EXPANDED FORM; SUBSTANTIVELY EQUIVALENT TO THE STANDARD MIT LICENSE)
 
-Copyright (c) 2026 Nif
+Copyright (c) 2026 Nif and the contributors to the PRISM-Q project, as the
+same may be identified in the version control history of the Software (as
+hereinafter defined). All rights not expressly granted herein are reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+ARTICLE 1. DEFINITIONS AND INTERPRETATION
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+1.1  For the purposes of this License, the following terms, whether used in
+     the singular or the plural and whether capitalised or not, shall have the
+     respective meanings ascribed to them below, save where the context
+     otherwise clearly requires:
+
+     (a) "License" means this instrument, being the terms and conditions for
+         use, reproduction, modification and distribution set forth in
+         Articles 1 through 6 inclusive of this document.
+
+     (b) "Licensor" means the copyright holder or holders identified in the
+         copyright notice above, together with their respective successors
+         in title and permitted assigns, in each case solely to the extent of
+         their respective rights in and to the Software.
+
+     (c) "Software" means the source code, object code, scripts, tests,
+         configuration files, documentation files, images and other
+         associated materials, in whatever form or medium, that are made
+         available by the Licensor in this repository under this License,
+         together with all associated documentation files, excluding, for the
+         avoidance of doubt, the Excluded Materials.
+
+     (d) "Excluded Materials" means any machine learning model weights,
+         checkpoints, or other model artefacts, including the PRISM-Q model
+         files derived from Qwen-Image 2.1 Turbo, whether or not referenced
+         by, downloaded by, or used in conjunction with the Software, all of
+         which are distributed separately and shall remain subject to the
+         licence terms applicable thereto (including the Qwen Research
+         License).
+
+     (e) "Person" means any natural person, corporation, partnership, limited
+         liability company, association, trust, unincorporated organisation,
+         governmental authority or other entity of whatsoever nature.
+
+     (f) "Copy" means any reproduction of the Software, in whole or in
+         Substantial Portion, in any form or medium whatsoever, whether now
+         known or hereafter devised.
+
+     (g) "Substantial Portion" means any portion of the Software that would,
+         under applicable copyright law, be regarded as a substantial part of
+         the Software or as embodying protectable expression contained
+         therein.
+
+1.2  Headings and article titles are inserted for convenience of reference
+     only and shall not affect the construction or interpretation of this
+     License. The words "include", "includes" and "including" shall be deemed
+     to be followed by the words "without limitation". The word "or" is not
+     exclusive.
+
+1.3  Nothing in this Article 1 shall be construed as imposing upon any Person
+     any obligation, condition or restriction in addition to those expressly
+     set forth in Article 3.
+
+
+ARTICLE 2. GRANT OF PERMISSION
+
+2.1  Subject to the terms and conditions of this License, permission is hereby
+     granted by the Licensor, free of charge, to any Person obtaining a Copy
+     of the Software, to deal in the Software without restriction, including
+     without limitation the rights to use, copy, modify, merge, publish,
+     distribute, sublicense, and/or sell Copies of the Software, and to
+     permit Persons to whom the Software is furnished to do so.
+
+2.2  The permission granted in Section 2.1 is non-exclusive, worldwide,
+     royalty-free and perpetual, and shall extend to the Software in any form
+     or medium, whether in source form, object form or otherwise.
+
+
+ARTICLE 3. CONDITIONS
+
+3.1  The permission granted in Article 2 is subject to the sole condition that
+     the above copyright notice and this permission notice (being the text of
+     this License) shall be included in all Copies or Substantial Portions of
+     the Software.
+
+3.2  No condition, obligation or restriction other than that set forth in
+     Section 3.1 is imposed by this License.
+
+
+ARTICLE 4. DISCLAIMER OF WARRANTY
+
+4.1  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+     OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+     MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+4.2  WITHOUT LIMITING THE GENERALITY OF SECTION 4.1, AND TO THE MAXIMUM EXTENT
+     PERMITTED BY APPLICABLE LAW, THE LICENSOR MAKES NO REPRESENTATION OR
+     WARRANTY OF ANY KIND AS TO THE ACCURACY, COMPLETENESS, RELIABILITY,
+     PERFORMANCE, OUTPUT QUALITY OR SUITABILITY OF THE SOFTWARE, OR AS TO THE
+     RESULTS TO BE OBTAINED FROM ITS USE, AND THE ENTIRE RISK AS TO THE
+     QUALITY AND PERFORMANCE OF THE SOFTWARE IS ASSUMED BY THE PERSON USING IT.
+
+
+ARTICLE 5. LIMITATION OF LIABILITY
+
+5.1  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+     CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
+     OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+     THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+5.2  THE LIMITATION SET FORTH IN SECTION 5.1 SHALL APPLY WHETHER OR NOT THE
+     AUTHORS OR COPYRIGHT HOLDERS HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH
+     CLAIM, DAMAGES OR OTHER LIABILITY, AND NOTWITHSTANDING THE FAILURE OF THE
+     ESSENTIAL PURPOSE OF ANY REMEDY.
+
+
+ARTICLE 6. GENERAL PROVISIONS
+
+6.1  Severability. If any provision of this License is held by a court of
+     competent jurisdiction to be invalid, illegal or unenforceable in any
+     respect, such provision shall be enforced to the maximum extent
+     permissible, and the validity, legality and enforceability of the
+     remaining provisions shall not in any way be affected or impaired
+     thereby.
+
+6.2  Excluded Materials. Nothing in this License shall be construed as
+     granting any right or licence in or to the Excluded Materials, each of
+     which is made available, if at all, solely under the terms of its own
+     applicable licence.
+
+6.3  Construction. This License is intended to confer upon each recipient of
+     the Software the same rights, and to impose the same conditions, as the
+     standard form of the MIT License, and shall be construed accordingly. In
+     the event of any ambiguity, this License shall be interpreted in the
+     manner most consistent with the standard form of the MIT License.
+
+6.4  No Waiver. No failure or delay by the Licensor in exercising any right
+     under this License shall operate as a waiver thereof, nor shall any
+     single or partial exercise of any such right preclude any other or
+     further exercise thereof or the exercise of any other right.
+
+END OF TERMS AND CONDITIONS
